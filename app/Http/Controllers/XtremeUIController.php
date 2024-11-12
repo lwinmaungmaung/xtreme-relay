@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthenticationRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -44,4 +45,10 @@ class XtremeUIController extends Controller
         $response = Http::withoutRedirecting()->get(config('app.BACKEND_SERVER'). "/play/$slug/$type");
         return $response->header('location');
     }
+    public function fallback(Request $request){
+        $path =  $request->getRequestUri();
+        $response = Http::withoutRedirecting()->get(config('app.BACKEND_SERVER').$path);
+        return ($response->status() === 302) ? $response->header('location'): $response->body();
+    }
 }
+
